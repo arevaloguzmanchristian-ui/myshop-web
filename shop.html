@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MyShop Bolivia</title>
+<link rel="stylesheet" href="css/styles.css">
+<script src="js/static-mode.js"></script>
+</head>
+<body>
+
+<!-- Navbar -->
+<nav class="navbar">
+  <div class="navbar-inner">
+    <a href="/" class="navbar-brand">My<span>Shop</span></a>
+    <div class="navbar-links">
+      <a href="/" class="active">Productos</a>
+      <a href="/login">Ingresar</a>
+      <div class="cart-icon" onclick="toggleCart()">
+        🛒 <span class="cart-badge" id="cartBadge">0</span>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- Main -->
+<div class="page">
+
+  <!-- Search + Filters -->
+  <div class="search-bar">
+    <input type="text" id="searchInput" placeholder="Buscar productos..." oninput="debounceSearch()">
+    <select id="marcaFilter" onchange="loadProducts()">
+      <option value="">Todas las marcas</option>
+    </select>
+    <select id="sortFilter" onchange="loadProducts()">
+      <option value="">Ordenar por</option>
+      <option value="precio_asc">Precio: menor a mayor</option>
+      <option value="precio_desc">Precio: mayor a menor</option>
+      <option value="nombre">Nombre A-Z</option>
+    </select>
+  </div>
+
+  <!-- Product grid -->
+  <div id="productGrid" class="product-grid"></div>
+  <div id="loadingMore" class="loading-wrap hidden"><div class="spinner"></div><span>Cargando más productos...</span></div>
+
+</div>
+
+<!-- Cart Sidebar -->
+<div class="cart-sidebar" id="cartSidebar">
+  <div class="cart-header">
+    <h3>🛒 Carrito</h3>
+    <button class="modal-close" onclick="toggleCart()">&times;</button>
+  </div>
+  <div class="cart-items" id="cartItems">
+    <div class="cart-empty">Tu carrito está vacío</div>
+  </div>
+  <div class="cart-footer hidden" id="cartFooter">
+    <div class="cart-total"><span>Total</span><span id="cartTotal">Bs 0</span></div>
+    <button class="btn btn-primary btn-block btn-lg" onclick="goToCheckout()">Pagar con QR</button>
+  </div>
+</div>
+
+<!-- Product Detail Modal -->
+<div class="modal-overlay hidden" id="productModal" onclick="if(event.target===this)closeModal()">
+  <div class="modal" style="max-width:800px;">
+    <div class="modal-header">
+      <h2 id="modalTitle">Producto</h2>
+      <button class="modal-close" onclick="closeModal()">&times;</button>
+    </div>
+    <div class="modal-body">
+      <div class="flex gap-4" style="flex-wrap:wrap;">
+        <div style="flex:1;min-width:250px;">
+          <img id="modalImg" src="" alt="" style="width:100%;max-height:350px;object-fit:contain;">
+        </div>
+        <div style="flex:1;min-width:250px;">
+          <p class="product-sku" id="modalSku"></p>
+          <h3 id="modalName" style="font-size:20px;margin-bottom:12px;"></h3>
+          <div style="margin-bottom:12px;">
+            <span class="product-price" id="modalPrice"></span>
+            <span class="product-old-price" id="modalOldPrice"></span>
+          </div>
+          <p style="font-size:14px;color:var(--gray-500);margin-bottom:8px;">
+            <span id="modalStock"></span> | Margen: <span id="modalMargen"></span>
+          </p>
+          <p id="modalMarca" class="text-sm text-muted mb-2"></p>
+          <p id="modalCategoria" class="text-sm text-muted mb-4"></p>
+          <div class="flex gap-2" style="align-items:center;margin-bottom:16px;">
+            <button class="btn btn-sm btn-secondary" onclick="changeQty(-1)">−</button>
+            <span id="modalQty" style="font-weight:700;min-width:30px;text-align:center;">1</span>
+            <button class="btn btn-sm btn-secondary" onclick="changeQty(1)">+</button>
+          </div>
+          <button class="btn btn-primary btn-lg btn-block" id="modalAddBtn" onclick="addFromModal()">Agregar al carrito</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Checkout Modal -->
+<div class="modal-overlay hidden" id="checkoutModal" onclick="if(event.target===this)closeCheckout()">
+  <div class="modal" style="max-width:500px;">
+    <div class="modal-header">
+      <h2>Checkout</h2>
+      <button class="modal-close" onclick="closeCheckout()">&times;</button>
+    </div>
+    <div class="modal-body" id="checkoutBody">
+      <div id="checkoutAlert" class="alert hidden"></div>
+      <div class="form-group">
+        <label>Nombre completo</label>
+        <input class="form-input" id="chkName" placeholder="Juan Pérez">
+      </div>
+      <div class="form-group">
+        <label>WhatsApp</label>
+        <input class="form-input" id="chkWhatsapp" placeholder="+59171234567">
+      </div>
+      <div class="form-group">
+        <label>Dirección de entrega</label>
+        <input class="form-input" id="chkDireccion" placeholder="Calle, Nro, Zona">
+      </div>
+      <div class="form-group">
+        <label>Ciudad</label>
+        <select class="form-select" id="chkCiudad">
+          <option value="La Paz">La Paz</option>
+          <option value="El Alto">El Alto</option>
+          <option value="Cochabamba">Cochabamba</option>
+          <option value="Santa Cruz">Santa Cruz</option>
+          <option value="Oruro">Oruro</option>
+          <option value="Potosí">Potosí</option>
+          <option value="Sucre">Sucre</option>
+          <option value="Tarija">Tarija</option>
+          <option value="Beni">Beni</option>
+          <option value="Pando">Pando</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Código de referido (opcional)</label>
+        <input class="form-input" id="chkRef" placeholder="Ej: AF0001">
+      </div>
+      <button class="btn btn-primary btn-lg btn-block" onclick="doCheckout()" id="checkoutBtn">Generar QR de pago</button>
+    </div>
+    <div class="modal-body hidden text-center" id="qrBody">
+      <div class="qr-display">
+        <h3 id="qrTitle">Escanea para pagar</h3>
+        <img id="qrImage" src="" alt="QR de pago">
+        <p class="qr-info" id="qrInfo">Total: Bs 0</p>
+        <p class="text-sm text-muted mt-2">Paga con cualquier app bancaria QR de Bolivia</p>
+        <button class="btn btn-primary btn-lg btn-block mt-4" onclick="closeCheckout(); window.location.reload()">&#x2705; Pagado - Volver a tienda</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="js/api.js"></script>
+<script>
+let currentPage = 0;
+let currentSku = null;
+let modalQty = 1;
+let searchTimer = null;
+let cartCount = 0;
+let affCode = null;
+let affComision = 3; // Default bronze commission for main shop
+let affNombre = "";
+
+// Capture affiliate ref from URL
+function getRefCode() {
+    const params = new URLSearchParams(window.location.search);
+    return params.get('ref') || '';
+}
+
+// Load affiliate info if ref is present
+async function loadAffInfo() {
+    const code = getRefCode();
+    if (!code) return;
+    affCode = code;
+    try {
+        const r = await (await fetch('/api/myshop_api.php?action=afiliado_info&codigo=' + code)).json();
+        if (r.success && r.afiliado) {
+            affComision = r.comision_pct || 0;
+            affNombre = r.afiliado.afiliado_nombre || code;
+            // Add affiliate badge to navbar
+            var badge = document.createElement('a');
+            badge.style.cssText = 'color:var(--primary);font-size:13px;font-weight:600;';
+            badge.innerHTML = '\ud83c\udfe0 ' + affNombre + ' <span style="font-weight:400;">(' + affComision + '%)</span>';
+            document.querySelector('.navbar-links').insertBefore(badge, document.querySelector('.cart-icon'));
+            document.getElementById('chkRef').value = code;
+        }
+    } catch(e) { console.log('Affiliate not loaded'); }
+}
+
+// Load products
+async function loadProducts() {
+  const q = document.getElementById('searchInput').value.trim();
+  const marca = document.getElementById('marcaFilter').value;
+  const sort = document.getElementById('sortFilter').value;
+  
+  document.getElementById('productGrid').innerHTML = '<div class="loading-wrap"><div class="spinner"></div><span>Cargando...</span></div>';
+  
+  try {
+    const r = await API.products.list({ q, marca, sort, limit: 50 });
+    const grid = document.getElementById('productGrid');
+    grid.innerHTML = '';
+    
+    if (!r.productos || r.productos.length === 0) {
+      grid.innerHTML = '<div class="loading-wrap"><span style="font-size:40px;">&#x1F4E6;</span><span>No se encontraron productos</span></div>';
+      return;
+    }
+    
+    r.productos.forEach(p => {
+      const card = document.createElement('div');
+      card.className = 'product-card';
+      card.innerHTML = `
+        <img class="product-img" src="${(p.images && p.images[0]) || 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22300%22 height=%22300%22%3E%3Crect fill=%22%23ddd%22 width=%22300%22 height=%22300%22/%3E%3Ctext fill=%22%23999%22 font-size=%2216%22 x=%2250%%22 y=%2250%%22 text-anchor=%22middle%22 dominant-baseline=%22central%22%3EMyShop%3C/text%3E%3C/svg%3E'}" alt="${p.name}" loading="lazy" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22300%22 height=%22300%22%3E%3Crect fill=%22%23ddd%22 width=%22300%22 height=%22300%22/%3E%3Ctext fill=%22%23999%22 font-size=%2216%22 x=%2250%%22 y=%2250%%22 text-anchor=%22middle%22 dominant-baseline=%22central%22%3EMyShop%3C/text%3E%3C/svg%3E'">
+        <div class="product-info">
+          <div class="product-sku">${p.sku}</div>
+          <div class="product-name">${p.name}</div>
+          <div><span class="product-price">Bs ${Number(p.price).toFixed(2)}</span>
+            ${p.priceOriginal && p.priceOriginal > p.price ? `<span class="product-old-price">Bs ${Number(p.priceOriginal).toFixed(2)}</span>` : ''}
+          </div>
+          <div class="product-stock">Stock: ${p.stock || 0} unid.</div>
+          <div class="product-aff-ganancia">Ganancia de afiliado: <strong>Bs ${Number((p.price * affComision / 100) || 0).toFixed(2)}</strong></div>
+          <div class="product-actions">
+            <button class="btn btn-primary btn-sm" style="flex:1;" onclick="event.stopPropagation(); addToCart('${p.sku}')">Agregar</button>
+            <button class="btn btn-secondary btn-sm" onclick="event.stopPropagation(); showProduct('${p.sku}')">Detalle</button>
+          </div>
+        </div>
+      `;
+      grid.appendChild(card);
+    });
+  } catch (e) {
+    document.getElementById('productGrid').innerHTML = `<div class="loading-wrap"><span style="font-size:40px;">😕</span><span>Error: ${e.message}</span></div>`;
+  }
+}
+
+// Show product detail
+async function showProduct(sku) {
+  currentSku = sku;
+  modalQty = 1;
+  document.getElementById('modalQty').textContent = '1';
+  document.getElementById('productModal').classList.remove('hidden');
+  
+  try {
+    const r = await API.products.get(sku);
+    const p = r.producto;
+    document.getElementById('modalTitle').textContent = p.name || p.sku;
+    document.getElementById('modalImg').src = (p.images && p.images[0]) || 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22400%22%3E%3Crect fill=%22%23ddd%22 width=%22400%22 height=%22400%22/%3E%3Ctext fill=%22%23999%22 font-size=%2220%22 x=%2250%%22 y=%2250%%22 text-anchor=%22middle%22 dominant-baseline=%22central%22%3EMyShop%3C/text%3E%3C/svg%3E';
+    document.getElementById('modalSku').textContent = p.sku;
+    document.getElementById('modalName').textContent = p.name || p.nombre || p.sku;
+    document.getElementById('modalPrice').textContent = 'Bs ' + Number(p.price).toFixed(2);
+    document.getElementById('modalOldPrice').textContent = p.priceOriginal && p.priceOriginal > p.price ? 'Bs ' + Number(p.priceOriginal).toFixed(2) : '';
+    document.getElementById('modalStock').textContent = 'Stock: ' + (p.stock || 0);
+    document.getElementById('modalMargen').textContent = (p.margin_pct || 0) + '%';
+    document.getElementById('modalMarca').textContent = 'Marca: ' + (p.marca || 'Genérica');
+    document.getElementById('modalCategoria').textContent = 'Categoría: ' + (p.categoria || 'General');
+  } catch (e) {
+    document.getElementById('modalTitle').textContent = 'Error: ' + e.message;
+  }
+}
+
+function changeQty(delta) {
+  modalQty = Math.max(1, modalQty + delta);
+  document.getElementById('modalQty').textContent = modalQty;
+}
+
+async function addFromModal() {
+  await addToCart(currentSku, modalQty);
+  closeModal();
+}
+
+// Cart
+async function addToCart(sku, qty = 1) {
+  try {
+    await API.cart.add(sku, qty);
+    updateCartBadge();
+    showToast('&#x2705; Producto agregado al carrito');
+  } catch (e) {
+    showToast('&#x274C; ' + e.message);
+  }
+}
+
+async function updateCartBadge() {
+  try {
+    const r = await API.cart.get();
+    cartCount = r.items.length;
+    document.getElementById('cartBadge').textContent = cartCount;
+    renderCartItems(r.items);
+  } catch { document.getElementById('cartBadge').textContent = '0'; }
+}
+
+function renderCartItems(items) {
+  const container = document.getElementById('cartItems');
+  const footer = document.getElementById('cartFooter');
+  
+  if (!items || items.length === 0) {
+    container.innerHTML = '<div class="cart-empty">Tu carrito está vacío</div>';
+    footer.classList.add('hidden');
+    return;
+  }
+  
+  footer.classList.remove('hidden');
+  let total = 0;
+  container.innerHTML = '';
+  
+  items.forEach(item => {
+    total += Number(item.subtotal);
+    const div = document.createElement('div');
+    div.className = 'cart-item';
+    div.innerHTML = `
+      <img class="cart-item-img" src="${item.imagen || 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2260%22 height=%2260%22%3E%3Crect fill=%22%23ddd%22 width=%2260%22 height=%2260%22/%3E%3C/svg%3E'}" alt="${item.name || item.nombre || item.sku}">
+      <div class="cart-item-info">
+        <div class="cart-item-name">${item.name || item.nombre || item.sku}</div>
+        <div class="cart-item-sku">${item.sku} × ${item.cantidad}</div>
+        <div class="cart-item-price">Bs ${Number(item.subtotal).toFixed(2)}</div>
+      </div>
+      <button class="btn btn-sm btn-danger" onclick="removeFromCart(${item.id})" style="align-self:center;">&#x2715;</button>
+    `;
+    container.appendChild(div);
+  });
+  
+  document.getElementById('cartTotal').textContent = 'Bs ' + total.toFixed(2);
+}
+
+async function removeFromCart(itemId) {
+  try {
+    await API.cart.remove(itemId);
+    updateCartBadge();
+  } catch (e) {
+    showToast('&#x274C; ' + e.message);
+  }
+}
+
+function toggleCart() {
+  document.getElementById('cartSidebar').classList.toggle('open');
+  if (document.getElementById('cartSidebar').classList.contains('open')) updateCartBadge();
+}
+
+// Checkout
+function goToCheckout() {
+  document.getElementById('cartSidebar').classList.remove('open');
+  document.getElementById('checkoutBody').classList.remove('hidden');
+  document.getElementById('qrBody').classList.add('hidden');
+  document.getElementById('checkoutModal').classList.remove('hidden');
+  
+  // Load saved checkout data first, then override with logged-in data
+  loadCheckoutData();
+  
+  // Try to get user data if logged in
+  const token = API.getToken();
+  if (token) {
+    API.auth.me().then(r => {
+      document.getElementById('chkName').value = r.usuario.nombre || '';
+      document.getElementById('chkWhatsapp').value = r.usuario.whatsapp || '';
+    }).catch(() => {});
+  }
+}
+
+async function doCheckout() {
+  const data = {
+    nombre: document.getElementById('chkName').value.trim(),
+    whatsapp: document.getElementById('chkWhatsapp').value.trim(),
+    direccion: document.getElementById('chkDireccion').value.trim(),
+    ciudad: document.getElementById('chkCiudad').value,
+    ref: document.getElementById('chkRef').value.trim() || undefined
+  };
+  
+  if (!data.nombre || !data.whatsapp) {
+    return showAlert('checkoutAlert', 'Nombre y WhatsApp son requeridos', 'error');
+  }
+  
+  const btn = document.getElementById('checkoutBtn');
+  btn.disabled = true;
+  btn.textContent = 'Generando QR...';
+  showAlert('checkoutAlert', '', '');
+  
+  try {
+    const r = await API.checkout.create(data);
+
+    // Save checkout data for next time
+    localStorage.setItem('myshop_checkout_data', JSON.stringify({
+        nombre: data.nombre,
+        whatsapp: data.whatsapp,
+        direccion: data.direccion || '',
+        ciudad: data.ciudad || 'La Paz'
+    }));
+    document.getElementById('checkoutBody').classList.add('hidden');
+    document.getElementById('qrBody').classList.remove('hidden');
+    document.getElementById('qrTitle').textContent = 'Pedido #' + r.pedido.id;
+    document.getElementById('qrImage').src = r.qr.qrImage;
+    document.getElementById('qrInfo').textContent = 'Total: Bs ' + Number(r.pedido.total).toFixed(2) + ' — Escanea con tu app bancaria';
+  } catch (e) {
+    showAlert('checkoutAlert', e.message, 'error');
+    btn.disabled = false;
+    btn.textContent = 'Generar QR de pago';
+  }
+}
+
+function closeCheckout() {
+  document.getElementById('checkoutModal').classList.add('hidden');
+}
+
+function closeModal() {
+  document.getElementById('productModal').classList.add('hidden');
+}
+
+// Search
+function debounceSearch() {
+  clearTimeout(searchTimer);
+  searchTimer = setTimeout(loadProducts, 400);
+}
+
+// Alert helper
+function showAlert(divId, msg, type) {
+  const div = document.getElementById(divId);
+  if (!div) return;
+  if (!msg) { div.classList.add('hidden'); return; }
+  div.textContent = msg;
+  div.className = 'alert ' + (type === 'error' ? 'alert-error' : type === 'success' ? 'alert-success' : '') + ' hidden';
+  div.classList.remove('hidden');
+}
+// Auto-fill checkout data from localStorage
+function loadCheckoutData() {
+    try {
+        var saved = localStorage.getItem('myshop_checkout_data');
+        if (saved) {
+            var data = JSON.parse(saved);
+            if (data.nombre) document.getElementById('chkName').value = data.nombre;
+            if (data.whatsapp) document.getElementById('chkWhatsapp').value = data.whatsapp;
+            if (data.direccion) document.getElementById('chkDireccion').value = data.direccion;
+            if (data.ciudad) document.getElementById('chkCiudad').value = data.ciudad;
+        }
+    } catch(e) {}
+    // Auto-fill ref from URL if present
+    var refP = getRefCode();
+    if (refP) document.getElementById('chkRef').value = refP;
+}
+
+
+// Toast
+function showToast(msg) {
+  const t = document.createElement('div');
+  t.style.cssText = 'position:fixed;bottom:20px;right:20px;background:var(--gray-900);color:#fff;padding:14px 24px;border-radius:8px;z-index:300;font-size:14px;box-shadow:0 4px 12px rgba(0,0,0,.3);animation:fadeIn .3s;';
+  t.textContent = msg;
+  document.body.appendChild(t);
+  setTimeout(() => { t.style.opacity = '0'; t.style.transition = 'opacity .5s'; setTimeout(() => t.remove(), 500); }, 3000);
+}
+
+// Load marcas on init
+async function loadMarcas() {
+  try {
+    const r = await API.products.marcas();
+    const sel = document.getElementById('marcaFilter');
+    if (r.marcas) r.marcas.forEach(m => {
+      const opt = document.createElement('option');
+      opt.value = m; opt.textContent = m;
+      sel.appendChild(opt);
+    });
+  } catch {}
+}
+
+// Init
+loadProducts();
+loadMarcas();
+loadAffInfo();
+updateCartBadge();
+
+// Open product detail if sku in URL
+var openSku = new URLSearchParams(window.location.search).get('sku');
+if (openSku) {
+  var obs = new MutationObserver(function() {
+    if (document.querySelector('.product-card')) {
+      obs.disconnect();
+      setTimeout(function(){showProduct(openSku);}, 400);
+    }
+  });
+  obs.observe(document.getElementById('productGrid'), { childList: true, subtree: true });
+  setTimeout(function(){try{obs.disconnect();showProduct(openSku)}catch(e){}}, 15000);
+}
+
+// Auto-load cart if token exists
+if (API.getToken()) updateCartBadge();
+// Auto-load cart if token exists
+if (API.getToken()) updateCartBadge();
+</script>
+</body>
+</html>

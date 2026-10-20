@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="es-BO">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MyShop Bolivia - Registro</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:#f4f5f7;min-height:100vh;display:flex;align-items:center;justify-content:center;color:#1a1a2e}
+.container{width:100%;max-width:420px;padding:20px}
+.card{background:#fff;border-radius:16px;box-shadow:0 4px 24px rgba(0,0,0,0.06);overflow:hidden}
+.card-header{text-align:center;padding:28px 24px 0}
+.card-header .logo{font-size:28px;font-weight:800;color:#2563eb;letter-spacing:-1px}
+.card-header h1{font-size:20px;font-weight:700;color:#1a1a2e;margin-top:8px}
+.card-header p{font-size:12px;color:#8b93a0;margin-top:4px}
+.card-body{padding:24px}
+.form-group{margin-bottom:14px}
+.form-group label{display:block;font-size:11px;font-weight:600;color:#6b7280;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px}
+.form-group input{width:100%;height:42px;padding:0 12px;border:1.5px solid #e8eaed;border-radius:10px;font-size:14px;font-family:inherit;transition:border-color .2s,box-shadow .2s;background:#fafbfc}
+.form-group input:focus{border-color:#2563eb;box-shadow:0 0 0 3px rgba(37,99,235,0.1);background:#fff;outline:none}
+.form-group input::placeholder{color:#b0b7c3}
+.form-hint{font-size:10px;color:#8b93a0;margin-top:3px}
+.btn{width:100%;height:44px;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;transition:all .2s;font-family:inherit}
+.btn-primary{background:linear-gradient(135deg,#2563eb,#1d4ed8);color:#fff;box-shadow:0 4px 14px rgba(37,99,235,0.25)}
+.btn-primary:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(37,99,235,0.35)}
+.btn-primary:disabled{opacity:.6;cursor:default;transform:none}
+.checkbox-wrap{display:flex;align-items:flex-start;gap:8px;margin:12px 0}
+.checkbox-wrap input{margin-top:2px;accent-color:#2563eb;width:16px;height:16px;flex-shrink:0}
+.checkbox-wrap label{font-size:12px;color:#4b5563;line-height:1.5}
+.error{display:none;background:#fee2e2;color:#b91c1c;font-size:12px;padding:10px 14px;border-radius:8px;margin-bottom:14px}
+.success{display:none;background:#d1fae5;color:#065f46;font-size:12px;padding:10px 14px;border-radius:8px;margin-bottom:14px}
+.hidden{display:none !important}
+.spinner{display:inline-block;width:16px;height:16px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .6s linear infinite;vertical-align:middle;margin-right:6px}
+@keyframes spin{to{transform:rotate(360deg)}}
+.footer-text{text-align:center;font-size:11px;color:#8b93a0;margin-top:16px}
+.footer-text a{color:#2563eb;text-decoration:none;font-weight:600}
+.footer-text a:hover{text-decoration:underline}
+.ref-link-box{background:#eff6ff;border:1px solid #bfdbfe;border-radius:10px;padding:14px;text-align:center;margin:14px 0}
+.ref-link-box .ref-title{font-size:11px;font-weight:600;color:#1e40af;margin-bottom:4px;text-transform:uppercase;letter-spacing:.5px}
+.ref-link-box .ref-code{font-size:18px;font-weight:800;color:#1e40af;font-family:monospace;letter-spacing:1px}
+.ref-link-box .ref-hint{font-size:10px;color:#3b82f6;margin-top:2px}
+.ref-banner{background:linear-gradient(135deg,#eff6ff,#f0fdf4);border:1px solid #bfdbfe;border-radius:12px;padding:14px;margin-bottom:18px;text-align:center}
+.ref-banner .rbt{font-size:13px;font-weight:700;color:#1e40af}
+.ref-banner .rbs{font-size:11px;color:#3b82f6;margin-top:4px}
+.login-link{text-align:center;font-size:12px;color:#6b7280;margin-top:14px}
+.login-link a{color:#2563eb;text-decoration:none;font-weight:600}
+.login-link a:hover{text-decoration:underline}
+</style>
+<script src="js/static-mode.js"></script>
+</head>
+<body>
+<div class="container">
+  <div class="card">
+    <div class="card-header">
+      <div class="logo">MyShop</div>
+      <h1>Crear cuenta</h1>
+      <p>Registrate para empezar a comprar</p>
+    </div>
+    <div class="card-body">
+
+      <div id="refBanner" class="ref-banner hidden">
+        <div class="rbt" id="refBannerName"></div>
+        <div class="rbs">Usa este código al registrarte</div>
+      </div>
+
+      <div id="errorBox" class="error"></div>
+      <div id="successBox" class="success"></div>
+
+      <form id="registerForm" onsubmit="return handleRegister(event)">
+        <div class="form-group">
+          <label>Nombre completo</label>
+          <input type="text" id="regNombre" placeholder="Tu nombre" required>
+        </div>
+        <div class="form-group">
+          <label>WhatsApp</label>
+          <input type="text" id="regWa" placeholder="76219693" required>
+          <div class="form-hint">Solo el numero, sin +591</div>
+        </div>
+        <div class="form-group">
+          <label>Contraseña</label>
+          <input type="password" id="regPass" placeholder="Minimo 6 caracteres" required minlength="6">
+        </div>
+        <div class="form-group">
+          <label>Confirmar contraseña</label>
+          <input type="password" id="regPassConfirm" placeholder="Repeti tu contraseña" required minlength="6">
+        </div>
+        <div class="checkbox-wrap">
+          <input type="checkbox" id="regAfiliado">
+          <label for="regAfiliado">Quiero ser afiliado y ganar comisiones por ventas</label>
+        </div>
+        <button type="submit" class="btn btn-primary" id="regBtn">Crear cuenta</button>
+      </form>
+
+      <div id="registerSuccess" class="hidden">
+        <div style="text-align:center;padding:20px 0">
+          <div style="font-size:48px;margin-bottom:12px">&#10003;</div>
+          <h3 style="font-size:18px;font-weight:700;color:#065f46;margin-bottom:6px">Cuenta creada</h3>
+          <p style="font-size:13px;color:#4b5563;margin-bottom:6px" id="regSuccessMsg"></p>
+          <div class="ref-link-box hidden" id="refLinkBox">
+            <div class="ref-title">Tu codigo de afiliado</div>
+            <div class="ref-code" id="refLinkCode"></div>
+            <div class="ref-hint">Comparti este codigo para ganar comisiones</div>
+          </div>
+          <div style="margin-top:16px;font-size:12px;color:#6b7280" id="regPendingMsg">
+            Tu solicitud de afiliado esta en revision.
+          </div>
+          <button class="btn btn-primary" style="margin-top:16px" onclick="window.location.href='/'">Ir a la tienda</button>
+        </div>
+      </div>
+
+      <div class="login-link">
+        Ya tienes cuenta? <a href="afiliado.html">Iniciar sesion</a>
+      </div>
+
+    </div>
+  </div>
+  <div class="footer-text">
+    <a href="/">Volver a la tienda</a>
+  </div>
+</div>
+
+<script>
+const API = '/api/myshop_api.php';
+const urlParams = new URLSearchParams(window.location.search);
+const refFromUrl = urlParams.get('ref') || '';
+
+if (refFromUrl) {
+  document.getElementById('refBanner').classList.remove('hidden');
+  document.getElementById('refBannerName').textContent = 'Invitado por: ' + refFromUrl;
+}
+
+function hideMessages() {
+  document.getElementById('errorBox').style.display = 'none';
+  document.getElementById('successBox').style.display = 'none';
+}
+
+function showError(msg) {
+  var el = document.getElementById('errorBox');
+  el.textContent = msg;
+  el.style.display = 'block';
+  document.getElementById('successBox').style.display = 'none';
+}
+
+function setBtnLoading(btn, loading) {
+  if (loading) {
+    btn.disabled = true;
+    btn.dataset.origText = btn.textContent;
+    btn.innerHTML = '<span class="spinner"></span>' + btn.textContent;
+  } else {
+    btn.disabled = false;
+    btn.textContent = btn.dataset.origText || btn.textContent;
+  }
+}
+
+async function handleRegister(e) {
+  e.preventDefault();
+  hideMessages();
+  var btn = document.getElementById('regBtn');
+  setBtnLoading(btn, true);
+
+  try {
+    var pass = document.getElementById('regPass').value;
+    var passConfirm = document.getElementById('regPassConfirm').value;
+    if (pass !== passConfirm) throw new Error('Las contraseñas no coinciden');
+
+    var wa = document.getElementById('regWa').value.trim();
+    // Auto-agregar prefijo 591 si no lo tiene
+    if (!wa.startsWith('591')) wa = '591' + wa.replace(/^\+?/,'');
+
+    var body = new URLSearchParams();
+    body.set('action', 'auth_register');
+    body.set('nombre', document.getElementById('regNombre').value.trim());
+    body.set('whatsapp', wa);
+    body.set('password', pass);
+
+    var refCode = refFromUrl;
+    if (refCode) body.set('ref_code', refCode);
+
+    var esAfiliado = document.getElementById('regAfiliado').checked;
+    if (esAfiliado) body.set('afiliado', '1');
+
+    var res = await fetch(API, { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: body.toString() });
+    var j = await res.json();
+    if (!j.success) throw new Error(j.error || 'Error al crear cuenta');
+
+    localStorage.setItem('aff_token', j.token);
+    if (j.codigo_afiliado) localStorage.setItem('aff_code', j.codigo_afiliado);
+    localStorage.setItem('aff_nombre', j.usuario.nombre);
+
+    document.getElementById('registerForm').classList.add('hidden');
+    document.getElementById('registerSuccess').classList.remove('hidden');
+
+    if (esAfiliado && j.codigo_afiliado) {
+      document.getElementById('refLinkBox').classList.remove('hidden');
+      document.getElementById('refLinkCode').textContent = j.codigo_afiliado;
+      document.getElementById('regPendingMsg').style.display = '';
+      document.getElementById('regSuccessMsg').textContent = 'Bienvenido ' + j.usuario.nombre;
+    } else {
+      document.getElementById('refLinkBox').classList.add('hidden');
+      document.getElementById('regPendingMsg').style.display = 'none';
+      document.getElementById('regSuccessMsg').textContent = 'Bienvenido ' + j.usuario.nombre + ' a MyShop';
+    }
+  } catch (err) {
+    showError(err.message);
+  } finally {
+    setBtnLoading(btn, false);
+  }
+  return false;
+}
+
+document.getElementById('regPass').addEventListener('keydown', function(e) {
+  if (e.key === 'Enter') handleRegister(e);
+});
+</script>
+</body>
+</html>

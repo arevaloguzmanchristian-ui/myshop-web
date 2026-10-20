@@ -1,0 +1,487 @@
+?<!DOCTYPE html>
+<html lang="es-BO">
+<head>
+<link rel="icon" type="image/png" sizes="192x192" href="assets/favicon.png?v=20260824-chat28">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>MyShop Bolivia — Tecnología, Alarmas y Electrónica</title>
+<meta name="description" content="MyShop Bolivia — Tu tienda de tecnología, alarmas y electrónica. JBL, TP-Link, Dahua, Hikvision y más.">
+<meta name="keywords" content="MyShop Bolivia, tecnología, alarmas, cámaras seguridad, JBL, AJAX, Dahua, electrónica, La Paz, Bolivia">
+<meta name="author" content="MyShop Bolivia">
+<meta name="robots" content="index, follow">
+
+<!-- Open Graph -->
+<meta property="og:title" content="MyShop Bolivia — Tecnología, Alarmas y Electrónica">
+<meta property="og:description" content="Tu tienda de tecnología en Bolivia. Productos originales con envío a todo el país.">
+<meta property="og:image" content="https://myshop.flaapi.com/img/logo-light@2x.png">
+<meta property="og:url" content="https://myshop.flaapi.com">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="es_BO">
+
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="MyShop Bolivia">
+<meta name="twitter:description" content="Tu tienda de tecnología en Bolivia.">
+
+<!-- Icons -->
+
+
+
+<link rel="apple-touch-icon" href="img/icon-192.png">
+
+<!-- Web App Manifest -->
+<link rel="manifest" href="manifest.json">
+
+<!-- Fonts: Space Grotesk (display) + Inter (body) + IBM Plex Mono (utility) -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/styles.css?v=20260824-chat53">
+<script src="js/static-mode.js"></script>
+</head>
+<body>
+<!-- ============ SPLASH LOADER ============ -->
+<div id="splash-loader">
+  <div class="splash-logos">
+    <img src="img/logo-white.png" class="logo-splash-light" alt="MyShop">
+    <img src="img/logo-white.png" class="logo-splash-dark" alt="MyShop">
+  </div>
+  <div class="splash-spinner"></div>
+  <div class="splash-text">Cargando productos...</div>
+</div>
+
+<!-- ============ TOAST ============ -->
+<div id="toast" class="toast"><span class="toast-icon">✓</span><span id="toastMsg"></span></div>
+
+<!-- ============ TOPBAR (trust info) ============ -->
+<div class="topbar">
+  <div class="topbar-inner">
+    <span class="topbar-item topbar-left">
+      <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+      Garantía oficial
+    </span>
+    <span class="topbar-item topbar-center">Envíos a toda Bolivia</span>
+    <a class="topbar-item topbar-right" href="https://wa.me/59176219693" target="_blank" rel="noopener">
+      <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+      +591 76219693
+    </a>
+  </div>
+</div>
+
+<!-- ============ HEADER ============ -->
+<header class="header">
+  <div class="header-row">
+    <a href="#" class="header-logo" onclick="setBrand(''); return false;">
+      <img src="assets/logo.jpg?v=20260824-chat27" alt="MyShop" class="brand-logo">
+    </a>
+    <div class="header-search" id="headerSearch">
+      <span class="search-icon">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      </span>
+      <input type="text" id="searchInput" placeholder="Buscar productos..." autocomplete="off">
+      <button class="search-clear" id="searchClear"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#999" stroke-width="2.5" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
+    </div>
+    <div class="header-actions">
+      <button class="header-icon-btn search-toggle" id="searchToggle" aria-label="Buscar">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      </button>
+      <button class="header-icon-btn" id="cartBtn" aria-label="Carrito">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg><span class="cart-badge" id="cartBadge">0</span>
+      </button>
+    </div>
+  </div>
+  <!-- Filter Bar -->
+  <div class="filter-bar" id="filterBar">
+    <div class="filter-bar-inner">
+      <label class="filter-bar-item stock-toggle">
+        <input type="checkbox" id="stockFilter">
+        <span>En stock</span>
+      </label>
+      <div class="filter-bar-divider"></div>
+      <div class="filter-bar-item sort-wrap">
+        <select id="sortSelect">
+          <option value="default">Relevancia</option>
+          <option value="price-asc">Precio menor</option>
+          <option value="price-desc">Precio mayor</option>
+          <option value="name-asc">A-Z</option>
+          <option value="name-desc">Z-A</option>
+        </select>
+      </div>
+      <div class="filter-bar-divider"></div>
+      <div class="filter-bar-item price-filters">
+        <button class="price-chip active" data-range="all">Todos</button>
+        <button class="price-chip" data-range="0-500">&lt; 500</button>
+        <button class="price-chip" data-range="500-1500">500-1.5k</button>
+        <button class="price-chip" data-range="1500-5000">1.5k-5k</button>
+        <button class="price-chip" data-range="5000">5k+</button>
+      </div>
+      <div class="filter-bar-divider mobile-only"></div>
+      <div class="filter-bar-item brand-select-wrap mobile-only">
+        <select id="mobileBrandSelect">
+          <option value="all">Todas las marcas</option>
+        </select>
+      </div>
+      <button class="filter-bar-clear" id="clearAllBtn">Limpiar</button>
+    </div>
+    <div class="active-filters" id="activeFilters"></div>
+  </div>
+</header>
+
+<!-- ============ TRUST STRIP ============ -->
+<section class="trust-strip">
+  <div class="trust-item">
+    <svg class="trust-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg>
+    <div class="trust-text"><strong>Garantía oficial</strong><span>Respaldada por el fabricante</span></div>
+  </div>
+  <div class="trust-item">
+    <svg class="trust-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11"/></svg>
+    <div class="trust-text"><strong>100% originales</strong><span>Sin réplicas ni imitaciones</span></div>
+  </div>
+  <div class="trust-item">
+    <svg class="trust-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 18H3c-.6 0-1-.4-1-1V7c0-.6.4-1 1-1h10c.6 0 1 .4 1 1v11"/><path d="M14 9h4l3 3v5c0 .6-.4 1-1 1h-1"/><circle cx="7" cy="18" r="2"/><circle cx="17" cy="18" r="2"/></svg>
+    <div class="trust-text"><strong>Envíos a todo el país</strong><span>Entregas seguras y rápidas</span></div>
+  </div>
+  <div class="trust-item">
+    <svg class="trust-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M7.5 7.5v9M16.5 7.5v9M7.5 12h9"/></svg>
+    <div class="trust-text"><strong>Pago con QR</strong><span>Desde tu app de banco</span></div>
+  </div>
+</section>
+
+<!-- ============ SHOP LAYOUT (Sidebar + Main) ============ -->
+<div class="shop-layout" id="catalogo">
+  <aside class="brand-sidebar" id="brandSidebar">
+    <div class="sidebar-header">Marcas</div>
+    <div class="sidebar-body">
+      <div class="sidebar-brands" id="sidebarBrands">
+        <!-- Dynamic brand list grouped by letter -->
+      </div>
+      <div class="sidebar-letter-index" id="letterIndex">
+        <!-- Quick letter links -->
+      </div>
+    </div>
+  </aside>
+  <main class="shop-main">
+    <!-- Result count -->
+    <div class="filter-info" id="filterInfo">
+      <span id="resultCount">0 productos</span>
+    </div>
+
+    <!-- Featured Offers Section -->
+    <div class="home-banner" id="homeBanner"><img src="assets/banner.jpg?v=20260824-chat28" alt="Las mejores promociones MyShop" loading="eager"></div>
+      <div class="offers-section" id="offersSection" style="display:none;">
+      <div class="offers-header">
+        <span class="offers-badge">Ofertas</span>
+        <span class="offers-title">Las mejores ofertas</span>
+      </div>
+      <div class="offers-carousel" id="offersCarousel">
+        <!-- Dynamic offers rendered by renderOffers() -->
+      </div>
+    </div>
+
+    <!-- Products Grid -->
+    
+      <div class="products-grid" id="productsGrid"></div>
+
+    <!-- Load More -->
+    <div id="loadMoreWrap" style="text-align:center;padding:20px 0 40px;display:none;">
+      <button id="loadMoreBtn" class="feat-btn" style="display:inline-flex;">Cargar más productos</button>
+    </div>
+  </main>
+</div>
+
+<!-- ============ QUICK VIEW MODAL (Product Detail) ============ -->
+<div class="qv-overlay" id="qvOverlay"></div>
+<div class="qv-modal" id="qvModal">
+  <button class="qv-close" id="qvClose"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
+  <div class="qv-content">
+    <!-- Image Carousel -->
+    <div class="qv-carousel-wrap" id="qvCarouselWrap">
+      <div class="qv-carousel">
+        <div class="qv-carousel-track" id="qvCarouselTrack"></div>
+        <button class="qv-carousel-nav qv-carousel-prev" id="qvCarouselPrev">‹</button>
+        <button class="qv-carousel-nav qv-carousel-next" id="qvCarouselNext">›</button>
+      </div>
+      <div class="qv-loader" id="qvLoader">
+        <div class="qv-loader-spinner"></div>
+      </div>
+      <div class="qv-carousel-dots" id="qvCarouselDots"></div>
+    </div>
+    <!-- Info Panel -->
+    <div class="qv-info" id="qvInfo">
+      <div class="qv-category" id="qvCategory"></div>
+      <div class="qv-title" id="qvTitle"></div>
+      <div class="qv-marca" id="qvMarca"></div>
+      <div class="qv-spec" id="qvSpec"></div>
+      <div class="qv-sku" id="qvSku"></div>
+      <div class="qv-price" id="qvPrice"></div>
+      <div class="qv-stock" id="qvStock"></div>
+      <div class="qv-stock-detalle" id="qvStockDetalle"></div>
+      <div class="qv-actions">
+        <button class="btn btn-cart-add qv-add-btn" id="qvAddBtn">Agregar al carrito</button>
+        <a class="wa-btn-sm" id="qvWaBtn" href="#" target="_blank" style="display:none;">Consultar por WhatsApp</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ CART MODAL ============ -->
+<div class="cart-overlay" id="cartOverlay"></div>
+<div class="cart-modal" id="cartModal">
+  <div class="cart-header">
+    <h2>Tu carrito</h2>
+    <button class="cart-close" id="cartClose"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
+  </div>
+  <div class="cart-items" id="cartItems">
+    <div class="cart-empty">
+      <svg width="50" height="50" viewBox="0 0 24 24" fill="none" stroke="#ddd" stroke-width="1.2">
+        <circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/>
+        <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
+      </svg>
+      <p>Tu carrito está vacío</p>
+      <span>Agregá productos para empezar</span>
+    </div>
+  </div>
+  <div class="cart-footer" id="cartFooter">
+    <div class="cart-total" id="cartTotal"></div>
+    <button class="cart-checkout-btn" id="checkoutBtn">Pagar con QR Ahora</button>
+  </div>
+</div>
+
+<!-- ============ QR MODAL (Payment) ============ -->
+<div class="qr-overlay" id="qrOverlay"></div>
+<div class="qr-modal" id="qrModal">
+  <button class="qr-close" id="qrClose"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
+  <div class="qr-header">
+    <h3 id="qrTitle">Pagar con QR</h3>
+    <div class="qr-timer" id="qrTimer"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> 5:00</div>
+  </div>
+  <div class="qr-body">
+    <!-- QR Code centered at top -->
+    <div class="qr-code-section">
+      <div id="qrContainer">
+        <div class="qr-spinner"></div>
+      </div>
+      <div class="qr-hint" id="qrHint">Escaneá con tu app de banco</div>
+    </div>
+    <!-- Order Info -->
+    <div class="qr-info-section" id="qrOrderInfo">
+      <div class="qr-loading">Generando QR de pago...</div>
+    </div>
+    <!-- Status message -->
+    <div class="qr-status-line" id="qrStatusMsg"></div>
+    <!-- WhatsApp & Confirm buttons inside body -->
+    <div class="qr-body-actions" id="qrBodyActions">
+      <button class="qr-btn qr-btn-primary" id="qrConfirmBtn" style="display:none;"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;"><polyline points="20 6 9 17 4 12"/></svg> Ya pagué</button>
+      <button class="qr-btn qr-btn-primary" id="qrDownloadBtn" onclick="downloadQR()" style="display:none;"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> Descargar QR</button>
+      <a class="qr-btn qr-btn-wa" id="qrWaBtn" href="#" target="_blank" style="display:none;">
+        <svg class="wa-icon" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+        Consultar por WhatsApp
+      </a>
+    </div>
+    <!-- Payment confirmed placeholder -->
+    <div class="qr-payment-done" id="qrPaymentDone" style="display:none;"></div>
+  </div>
+  <div class="qr-footer">
+    <button class="qr-btn qr-btn-secondary" id="qrCloseBtn">Cerrar ventana</button>
+  </div>
+</div>
+
+<!-- ============ WELCOME MODAL (hero) ============ -->
+<div class="wm-overlay" id="wmOverlay" aria-hidden="true">
+  <div class="wm-modal" role="dialog" aria-modal="true" aria-labelledby="wmTitle">
+    <button class="wm-close" id="wmClose" aria-label="Cerrar">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
+    </button>
+    <img src="img/logo-white.png" alt="MyShop" class="wm-logo">
+    <div class="wm-eyebrow"><span class="live-dot"></span>Distribuidor de tecnología · Bolivia</div>
+    <h2 class="wm-title" id="wmTitle">Tecnología original,<br>precio de <span class="wm-accent">distribuidor</span>.</h2>
+    <p class="wm-sub">Audio, seguridad y electrónica con garantía oficial. Comprá online y pagá con QR — envíos a todo el país.</p>
+    <div class="wm-chips">
+      <button class="wm-chip" data-brand="DAHUA">DAHUA</button>
+      <button class="wm-chip" data-brand="TP-LINK">TP-LINK</button>
+      <button class="wm-chip" data-brand="HAVIT">HAVIT</button>
+      <button class="wm-chip" data-brand="UGREEN">UGREEN</button>
+      <button class="wm-chip" data-brand="UBIQUITI">UBIQUITI</button>
+      <button class="wm-chip wm-chip-all" data-brand="">Ver todo</button>
+    </div>
+    <div class="wm-status">
+      <div class="wm-status-item"><span class="hs-check">✓</span> Productos 100% originales</div>
+      <div class="wm-status-item"><span class="hs-check">✓</span> Garantía oficial de fábrica</div>
+      <div class="wm-status-item"><span class="hs-check">✓</span> Pago seguro con QR</div>
+    </div>
+    <button class="wm-cta" id="wmCta">Explorar catálogo</button>
+  </div>
+</div>
+
+<!-- ============ FOOTER ============ -->
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-col footer-brand">
+      <img src="img/logo-white.png" alt="MyShop Bolivia" class="footer-logo">
+      <p class="footer-tagline">Tecnología, alarmas y electrónica con garantía oficial. Catálogo en línea con envíos a toda Bolivia.</p>
+    </div>
+    <div class="footer-col">
+      <h4 class="footer-title">Tienda</h4>
+      <ul class="footer-links">
+        <li><a href="#" onclick="setBrand(''); return false;">Todas las marcas</a></li>
+        <li><a href="#" onclick="document.getElementById('offersSection').scrollIntoView({behavior:'smooth'}); return false;">Ofertas</a></li>
+        <li><a href="#" onclick="setBrand(''); document.getElementById('catalogo').scrollIntoView({behavior:'smooth'}); return false;">Catálogo completo</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4 class="footer-title">Contacto</h4>
+      <ul class="footer-links">
+        <li><a href="https://wa.me/59176219693" target="_blank" rel="noopener">WhatsApp +591 76219693</a></li>
+        <li><span>La Paz — Bolivia</span></li>
+        <li><span>Tienda 100% online</span></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4 class="footer-title">Información</h4>
+      <ul class="footer-links">
+        <li><span>Precios en bolivianos (Bs)</span></li>
+        <li><span>Productos 100% originales</span></li>
+        <li><span>Garantía oficial de fábrica</span></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2026 MyShop Bolivia · Todos los derechos reservados</span>
+  </div>
+</footer>
+
+<!-- ============ SCRIPTS ============ -->
+<script src="https://accounts.google.com/gsi/client"></script>
+<script src="js/main.js?v=20260824-chat54"></script>
+<script>
+/* Welcome modal — reemplaza al hero: aparece siempre al cargar, tras el splash */
+(function () {
+  var overlay = document.getElementById('wmOverlay');
+  if (!overlay) return;
+  var shown = false;
+  function open() {
+    if (shown) return;
+    shown = true;
+    overlay.classList.add('open');
+    overlay.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+  }
+  function close() {
+    overlay.classList.remove('open');
+    overlay.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+  }
+  function goToCatalog() {
+    close();
+    var cat = document.getElementById('catalogo');
+    if (cat) cat.scrollIntoView({ behavior: 'smooth' });
+  }
+  document.getElementById('wmClose').addEventListener('click', close);
+  document.getElementById('wmCta').addEventListener('click', function () {
+    goToCatalog();
+  });
+  overlay.addEventListener('click', function (e) { if (e.target === overlay) close(); });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') close(); });
+  overlay.querySelectorAll('.wm-chip').forEach(function (ch) {
+    ch.addEventListener('click', function () {
+      var b = ch.getAttribute('data-brand');
+      if (typeof setBrand === 'function' && b) setBrand(b);
+      goToCatalog();
+    });
+  });
+  /* esperar a que el splash desaparezca (main.js lo oculta a ~400ms + transición) */
+  var tries = 0;
+  var t = setInterval(function () {
+    tries++;
+    var s = document.getElementById('splash-loader');
+    if ((s && s.classList.contains('hidden')) || tries > 40) {
+      clearInterval(t);
+      setTimeout(open, 350);
+    }
+  }, 120);
+})();
+</script>
+<button class="chat-fab" id="chatFab" aria-label="Asistente virtual">
+  <svg class="chat-fab-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+  <span class="chat-fab-badge" id="chatFabBadge">1</span>
+</button>
+
+<!-- ═══ CHAT WIDGET ═══ -->
+<div class="chat-widget" id="chatWidget">
+  <div class="chat-header">
+    <div class="chat-header-logo">
+      <img src="img/logo-light.png" alt="MyShop">
+    </div>
+    <div class="chat-header-info">
+      <div class="chat-header-title">Asistente MyShop</div>
+      <div class="chat-header-status"><span class="chat-status-dot"></span> Max · Online</div>
+    </div>
+    <div class="chat-switch" id="chatSwitch" title="Cambiar modo">
+      <span class="chat-switch-label" id="switchLabelChat">Chat</span>
+      <label class="chat-switch-toggle">
+        <input type="checkbox" id="chatModeCheck"/>
+        <span class="chat-switch-slider"></span>
+      </label>
+      <span class="chat-switch-label" id="switchLabelCotiz">Cotizar</span>
+    </div>
+    <button class="chat-close" id="chatClose" aria-label="Cerrar chat">×</button>
+  </div>
+  <div class="chat-context" id="chatContext" style="display:none;"></div>
+  <div class="chat-messages" id="chatMessages"></div>
+  <div class="chat-suggestions" id="chatSuggestions"></div>
+  <div class="chat-input-row" id="chatInputRow">
+    <textarea id="chatInput" rows="1" placeholder="Escribí tu consulta..." autocomplete="off"></textarea>
+    <button class="chat-send" id="chatSend" aria-label="Enviar">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+    </button>
+  </div>
+  <div class="chat-note">Envíos a toda Bolivia · Garantía oficial · Pago con QR</div>
+</div>
+
+<!-- ═══ RECOMMENDATIONS MODAL ═══ -->
+<div class="rec-overlay" id="recOverlay"></div>
+<div class="rec-modal" id="recModal">
+  <div class="rec-header">
+    <h3>Recomendaciones del asistente</h3>
+    <button class="rec-close" id="recClose" aria-label="Cerrar">×</button>
+  </div>
+  <div class="rec-body" id="recBody"></div>
+</div>
+
+<!-- ═══ COTIZACIÓN MODAL ═══ -->
+<div class="cotiz-overlay" id="cotizOverlay"></div>
+<div class="cotiz-modal" id="cotizModal">
+  <div class="cotiz-header">
+    <div class="cotiz-head-info">
+      <h3>Cotización</h3>
+      <span class="cotiz-status" id="cotizStatus">Preparando…</span>
+    </div>
+    <button class="cotiz-chat-toggle" id="cotizChatToggle" title="Ver chat y cotización a la vez">Chat</button>
+    <button class="cotiz-reset" id="cotizReset" title="Vaciar cotización">Limpiar</button>
+    <button class="cotiz-close" id="cotizClose" aria-label="Cerrar">×</button>
+  </div>
+  <div class="cotiz-body" id="cotizBody">
+    <div class="cotiz-empty" id="cotizEmpty">
+      <svg width="42" height="42" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+      <p>Max está armando tu cotización…</p>
+    </div>
+  </div>
+  <div class="cotiz-footer">
+    <div class="cotiz-total-row">
+      <span class="cotiz-count" id="cotizCount">0 productos</span>
+      <span class="cotiz-total-amount" id="cotizTotal">Bs 0.00</span>
+    </div>
+    <div class="cotiz-actions">
+      <button class="cotiz-btn-add" id="cotizAddAll">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+        Agregar todo al carrito
+      </button>
+      <button class="cotiz-btn-wp" id="cotizSendWp">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+        WhatsApp
+      </button>
+    </div>
+  </div>
+</div>
+</body>
+</html>
